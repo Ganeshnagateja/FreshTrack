@@ -1,0 +1,91 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123b32">
+  <title>{% block title %}FreshTrack · Inventory intelligence{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/app.css' %}">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" class="svg-defs" aria-hidden="true">
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></symbol>
+  <symbol id="i-box" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="M3 8v8l9 5 9-5V8M12 13v8"/></symbol>
+  <symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M4 12h16M8 9v6M12 9v6M16 9v6"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-plug" viewBox="0 0 24 24"><path d="M8 3v5M16 3v5M6 8h12v3a6 6 0 0 1-6 6h0a6 6 0 0 1-6-6V8ZM12 17v4"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M16 3v4M8 3v4M3 10h18"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="m10.3 4.4-8 14A1.8 1.8 0 0 0 3.8 21h16.4a1.8 1.8 0 0 0 1.5-2.6l-8-14a1.9 1.9 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  <symbol id="i-trend" viewBox="0 0 24 24"><path d="m3 17 6-6 4 4 8-9M15 6h6v6"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+  <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 16v4h16v-4"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M20 4c-8 0-14 3-14 10a6 6 0 0 0 6 6c7 0 8-8 8-16Z"/><path d="M3 21c4-7 8-10 13-13"/></symbol>
+</svg>
+{% if user.is_authenticated and user.organization_id %}
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a href="{% url 'dashboard' %}" class="brand-lockup">
+      <span class="brand-mark"><svg><use href="#i-leaf"></use></svg></span>
+      <span class="brand-copy"><strong>FreshTrack</strong><small>Inventory intelligence</small></span>
+    </a>
+    <div class="workspace-switcher">
+      <span class="workspace-avatar">{{ user.organization.name|slice:":1"|upper }}</span>
+      <span class="workspace-name"><strong>{{ user.organization.name }}</strong><small>Business workspace</small></span>
+      <span class="switch-chevron">⌄</span>
+    </div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav class="side-nav" aria-label="Primary navigation">
+      <a href="{% url 'dashboard' %}" class="nav-link {% if active_nav == 'dashboard' %}active{% endif %}"><svg><use href="#i-grid"></use></svg><span>Overview</span></a>
+      <a href="{% url 'inventory_list' %}" class="nav-link {% if active_nav == 'inventory' %}active{% endif %}"><svg><use href="#i-box"></use></svg><span>Inventory</span><span class="nav-pill">{{ user.organization.inventory_items.count }}</span></a>
+      <a href="{% url 'alert_center' %}" class="nav-link {% if active_nav == 'alerts' %}active{% endif %}"><svg><use href="#i-bell"></use></svg><span>Expiry alerts</span></a>
+    </nav>
+    <div class="nav-label nav-label-spaced">TOOLS</div>
+    <nav class="side-nav" aria-label="Tools">
+      <a href="{% url 'inventory_import' %}" class="nav-link {% if active_nav == 'import' %}active{% endif %}"><svg><use href="#i-upload"></use></svg><span>Bulk import</span></a>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="sidebar-tip"><span class="tip-icon"><svg><use href="#i-leaf"></use></svg></span><strong>Less waste starts here.</strong><p>Know what you have, and what needs attention next.</p></div>
+      <div class="user-profile">
+        <div class="profile-avatar">{{ user.display_name|slice:":1"|upper }}</div>
+        <div class="profile-meta"><strong>{{ user.display_name }}</strong><small>{{ user.email|default:user.username }}</small></div>
+        <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="icon-button logout-button" aria-label="Sign out" title="Sign out">↗</button></form>
+      </div>
+    </div>
+  </aside>
+  <div class="main-shell">
+    <header class="topbar">
+      <button class="icon-button menu-toggle" id="menuToggle" aria-label="Open navigation"><svg><use href="#i-menu"></use></svg></button>
+      <div class="breadcrumbs"><span>Workspace</span><span class="crumb-slash">/</span><strong>{% block breadcrumb %}Overview{% endblock %}</strong></div>
+      <div class="topbar-actions">
+        <span class="system-status"><i></i> Inventory tracking active</span>
+        <a class="topbar-date" href="{% url 'alert_center' %}" title="Expiry alerts"><svg><use href="#i-bell"></use></svg></a>
+        <a href="{% url 'inventory_create' %}" class="button button-primary button-small"><svg><use href="#i-plus"></use></svg><span>New item</span></a>
+      </div>
+    </header>
+    <main class="page-content">
+      {% if messages %}<div class="messages">{% for message in messages %}<div class="message {{ message.tags }}"><span>{{ message }}</span><button type="button" class="message-close" aria-label="Dismiss">×</button></div>{% endfor %}</div>{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="app-footer"><span>FreshTrack <span class="footer-dot">•</span> Inventory management</span><span>Inventory &amp; expiry tracking</span></footer>
+  </div>
+</div>
+{% else %}
+{% if messages %}<div class="guest-messages">{% for message in messages %}<div class="message {{ message.tags }}"><span>{{ message }}</span></div>{% endfor %}</div>{% endif %}
+{% block guest_content %}{% endblock %}
+{% endif %}
+<script src="{% static 'js/app.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

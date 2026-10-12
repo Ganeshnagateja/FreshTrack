@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Sign in · FreshTrack{% endblock %}
+{% block guest_content %}
+<div class="auth-page">
+  <div class="auth-visual">
+    <a href="{% url 'login' %}" class="brand-lockup auth-brand"><span class="brand-mark"><svg><use href="#i-leaf"></use></svg></span><span class="brand-copy"><strong>FreshTrack</strong><small>Inventory intelligence</small></span></a>
+    <div class="auth-visual-copy"><span class="eyebrow eyebrow-light"><i></i> INVENTORY, WITH CLARITY</span><h1>Good decisions<br>start with <em>fresh data.</em></h1><p>Track stock, catch expiry risks early, and keep every item accounted for.</p>
+      <div class="visual-stats"><div><strong>01</strong><span>Unified inventory</span></div><div><strong>02</strong><span>Expiry awareness</span></div><div><strong>03</strong><span>Expiry watchlist</span></div></div>
+    </div>
+    <div class="auth-visual-foot"><span>Thoughtful stock management for food businesses.</span><span>© FreshTrack</span></div>
+  </div>
+  <div class="auth-panel"><div class="auth-form-wrap"><span class="eyebrow">WELCOME BACK</span><h2>Sign in to your workspace</h2><p class="auth-subtitle">Use your account credentials to continue.</p>
+    {% if form.errors %}<div class="form-alert">We couldn't sign you in. Check your username and password.</div>{% endif %}
+    <form method="post" class="stack-form">{% csrf_token %}<input type="hidden" name="next" value="{{ next }}" />
+      <div class="form-field"><label for="id_username">Username</label><input class="form-control" type="text" name="username" id="id_username" autocomplete="username" required autofocus placeholder="Your username" value="{{ form.username.value|default:'' }}"></div>
+      <div class="form-field"><label for="id_password">Password</label><input class="form-control" type="password" name="password" id="id_password" autocomplete="current-password" required placeholder="Enter your password"></div>
+      <button class="button button-primary button-wide" type="submit">Sign in <svg><use href="#i-arrow"></use></svg></button>
+    </form>
+    <p class="auth-switch">New to FreshTrack? <a href="{% url 'register' %}">Create a workspace</a></p>
+    <div class="auth-security"><span class="security-dot"></span>Your inventory is isolated to your organization.</div>
+  </div></div>
+</div>
+{% endblock %}

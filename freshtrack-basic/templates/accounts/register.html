@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Create workspace · FreshTrack{% endblock %}
+{% block guest_content %}
+<div class="auth-page auth-page-register">
+  <div class="auth-visual"><a href="{% url 'register' %}" class="brand-lockup auth-brand"><span class="brand-mark"><svg><use href="#i-leaf"></use></svg></span><span class="brand-copy"><strong>FreshTrack</strong><small>Inventory intelligence</small></span></a><div class="auth-visual-copy"><span class="eyebrow eyebrow-light"><i></i> YOUR OPERATIONS, ORGANIZED</span><h1>One clear view<br>of everything <em>in stock.</em></h1><p>A clear way to record food inventory and catch expiry risks early.</p><div class="visual-note"><span class="note-check">✓</span><span><strong>Built for real inventory workflows</strong><small>Manual item entry, CSV imports and expiry alerts.</small></span></div></div><div class="auth-visual-foot"><span>Start with inventory. Build responsibly.</span><span>© FreshTrack</span></div></div>
+  <div class="auth-panel"><div class="auth-form-wrap auth-register-wrap"><span class="eyebrow">GET STARTED</span><h2>Create your workspace</h2><p class="auth-subtitle">Set up your organization and add your first items.</p>
+    <form method="post" class="stack-form">{% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-alert">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required-star">*</span>{% endif %}</label>{{ field }}{% if field.help_text %}<div class="field-help">{{ field.help_text|safe }}</div>{% endif %}{% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}</div>{% endfor %}
+      <button class="button button-primary button-wide" type="submit">Create workspace <svg><use href="#i-arrow"></use></svg></button>
+    </form><p class="auth-switch">Already have an account? <a href="{% url 'login' %}">Sign in</a></p><div class="auth-security"><span class="security-dot"></span>Each workspace sees only its own inventory.</div>
+  </div></div>
+</div>
+{% endblock %}

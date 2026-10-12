@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: freshtrack
+      POSTGRES_USER: freshtrack
+      POSTGRES_PASSWORD: freshtrack_dev_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U freshtrack -d freshtrack"]
+      interval: 5s
+      timeout: 5s
+      retries: 15
+
+  web:
+    build: .
+    restart: unless-stopped
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-dev-only-change-me-before-deployment}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-True}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-127.0.0.1,localhost,web}
+      DATABASE_URL: postgresql://freshtrack:freshtrack_dev_password@db:5432/freshtrack
+      DJANGO_EMAIL_BACKEND: django.core.mail.backends.console.EmailBackend
+      DEFAULT_FROM_EMAIL: "FreshTrack <alerts@example.local>"
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
